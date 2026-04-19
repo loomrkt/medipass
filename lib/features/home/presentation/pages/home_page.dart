@@ -1,106 +1,127 @@
 import 'package:flutter/material.dart';
-import '../widgets/home_header_widget.dart'; // Vérifie bien le nom du fichier
-import '../widgets/section_card.dart';      // Convention snake_case recommandée
-
-class HomePage extends StatelessWidget {
+import '../widgets/home_header_widget.dart';
+import '../widgets/medical_list_section.dart';
+import '../widgets/ActivitySection.dart';
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F9FF),
-      body: Stack(
-        children: [
-          // Fond dégradé
-          Container(
-            height: 300,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.0, 0.6, 1.0],
-                colors: [
-                  Color(0xFF2B88F0), // Radiant blue from the images
-                  Color(0xFFB1D8FB), // Lighter blue transition
-                  Colors.white,      // Fades completely into white
-                ],
-              ),
-            ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Remplacement de _buildHeader() par le Widget
-                  const HomeHeaderWidget(), 
-                  
-                  SectionCard(
-                    title: "Mes Tickets",
-                    children: [
-                      _buildTicketItem("Mal au ventre", "Hospital", "il y a 2h", Colors.green),
-                      const Divider(),
-                      _buildTicketItem("Infection bucale", "Hospital", "il y a 2 mois", Colors.red),
-                    ],
-                  ),
+  State<HomePage> createState() => _HomePageState();
+}
 
-                  SectionCard(
-                    title: "Mes discussion IA",
-                    children: [
-                      _buildTicketItem("Mal au ventre", null, "il y a 2h", null),
-                      const Divider(),
-                      _buildTicketItem("Infection bucale", null, "il y a 2 mois", null),
-                    ],
-                  ),
+class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
 
-                  _buildMedicalCenterSearch(),
-                ],
-              ),
-            ),
+  // Données simulées
+  final List<Map<String, dynamic>> ticketsData = [
+    {
+      "title": "Mal au ventre",
+      "subtitlePrefix": "Hospital",
+      "time": "il y a 2h",
+      "statusColor": Colors.green,
+    },
+    {
+      "title": "Infection bucale",
+      "subtitlePrefix": "Hospital",
+      "time": "il y a 2 mois",
+      "statusColor": Colors.red,
+    },
+    {
+      "title": "Infection bucale",
+      "subtitlePrefix": "Hospital",
+      "time": "il y a 2 mois",
+      "statusColor": Colors.red,
+    },
+  ];
+
+  final List<Map<String, dynamic>> iaData = [
+    {
+      "title": "Mal au ventre",
+      "time": "il y a 2h",
+    },
+    {
+      "title": "Consultation IA - Symptômes",
+      "time": "il y a 1h",
+    },
+  ];
+
+  final List<Map<String, dynamic>> centresData = [
+    {
+      "name": "Salfa Andohalo",
+      "slogan": "Izahay mitsabo, jesosy manasitran",
+      "time": "10:30am - 5:30pm",
+      "showButton": true,
+    },
+    {
+      "name": "Salfa Andohalo",
+      "slogan": "Izahay mitsabo, jesosy manasitran",
+      "time": "10:30am - 5:30pm",
+      "showButton": true,
+    },
+  ];
+
+  final List<Map<String, dynamic>> labosData = [
+    {
+      "name": "Salfa Andohalo",
+      "slogan": "Izahay mitsabo, jesosy manasitran",
+      "time": "10:30am - 5:30pm",
+      "showButton": false,
+    },
+    {
+      "name": "Salfa Andohalo",
+      "slogan": "Izahay mitsabo, jesosy manasitran",
+      "time": "10:30am - 5:30pm",
+      "showButton": false,
+    },
+  ];
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    // On enlève le Stack ici
+    body: SingleChildScrollView(
+      controller: _scrollController,
+      physics: const BouncingScrollPhysics(),
+      child: Container(
+        // Le dégradé est appliqué ici
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.0, 0.2, 0.4],
+            colors: [
+              Color(0xFF2B88F0),
+              Color(0xFFB1D8FB),
+              Color(0xFFF5F9FF),
+            ],
           ),
-        ],
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 30),
+              const HomeHeaderWidget(),
+              ActivitySection(title: "Mes Tickets", data: ticketsData),
+              ActivitySection(title: "Mes discussions IA", data: iaData),
+              const SizedBox(height: 10),
+              MedicalListSection(
+                title: "Rechercher un centre",
+                onSeeAllPressed: () {},
+                items: centresData,
+              ),
+              const SizedBox(height: 10),
+              MedicalListSection(
+                title: "Rechercher un laboratoire",
+                onSeeAllPressed: () {},
+                items: labosData,
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  // Garde ces méthodes ici pour l'instant, ou transforme les aussi en widgets 
-  // dans le dossier /widgets pour une Clean Arch parfaite !
-  Widget _buildTicketItem(String title, String? hospital, String time, Color? statusColor) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: statusColor != null 
-          ? Icon(Icons.circle, color: statusColor, size: 12) 
-          : null,
-      title: Text("Ticket - $title", style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: Text("${hospital != null ? '$hospital | ' : ''}Mis à jour $time"),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-    );
-  }
-
-  Widget _buildMedicalCenterSearch() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Rechercher un centre médical", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(color: Colors.grey[300], width: 50, height: 50),
-              ),
-              title: const Text("Salfa Andohalo"),
-              subtitle: const Text("Izahay mitsabo, jesosy manasitran"),
-              trailing: const Icon(Icons.location_on_outlined),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

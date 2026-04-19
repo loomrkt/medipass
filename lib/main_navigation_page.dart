@@ -27,8 +27,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           inactiveColorPrimary: Colors.grey,
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.folder),
-          title: ('Tickets'),
+          icon: Icon(Icons.search),
+          title: ('Rechercher'),
           activeColorPrimary: Colors.blue,
           inactiveColorPrimary: Colors.grey,
         ),
