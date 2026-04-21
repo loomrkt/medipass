@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'section_card.dart';
-import 'ticket_item_widget.dart';
-import 'empty_section.dart';
+import '../../../../core/widgets/section_card.dart';
+import '../../../../core/widgets/ticket_item_widget.dart';
+import '../../../../core/widgets/empty_section.dart';
 
 class ActivitySection extends StatelessWidget {
   final String title;
@@ -23,9 +23,9 @@ class ActivitySection extends StatelessWidget {
             children: [
               TicketItemWidget(
                 title: item['title'],
-                subtitlePrefix: item['subtitlePrefix'] ?? '',
-                time: item['time'],
-                statusColor: item['statusColor'] ?? Colors.grey,
+                subtitlePrefix: item['subtitlePrefix'] ?? null,
+                time: item['time'] ?? null,
+                statusColor: item['statusColor'] ?? null,
               ),
               if (index < data.length - 1) const Divider(),
             ],

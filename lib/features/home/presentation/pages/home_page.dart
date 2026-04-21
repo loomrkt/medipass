@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/home_header_widget.dart';
-import '../widgets/medical_list_section.dart';
+import '../../../../core/widgets/medical_list_section.dart';
 import '../widgets/ActivitySection.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,11 +37,9 @@ class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> iaData = [
     {
       "title": "Mal au ventre",
-      "time": "il y a 2h",
     },
     {
       "title": "Consultation IA - Symptômes",
-      "time": "il y a 1h",
     },
   ];
 
@@ -85,14 +83,16 @@ Widget build(BuildContext context) {
       child: Container(
         // Le dégradé est appliqué ici
         decoration: const BoxDecoration(
+          color: Color(0xFFF9F9F9), 
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.0, 0.2, 0.4],
+            stops: [0.0, 0.2, 0.4, 1.0], 
             colors: [
-              Color(0xFF2B88F0),
-              Color(0xFFB1D8FB),
-              Color(0xFFF5F9FF),
+              Color(0xFF2B88F0), // Bleu vif
+              Color(0xFFB1D8FB), // Bleu clair
+              Color(0xFFF9F9F9), // Transition vers blanc cassé
+              Color(0xFFF9F9F9), // Maintien du blanc cassé jusqu'en bas
             ],
           ),
         ),
@@ -108,12 +108,14 @@ Widget build(BuildContext context) {
                 title: "Rechercher un centre",
                 onSeeAllPressed: () {},
                 items: centresData,
+                activedTitle: true,
               ),
               const SizedBox(height: 10),
               MedicalListSection(
                 title: "Rechercher un laboratoire",
                 onSeeAllPressed: () {},
                 items: labosData,
+                activedTitle: true,
               ),
               const SizedBox(height: 30),
             ],

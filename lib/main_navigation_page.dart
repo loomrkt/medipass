@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medipass/features/home/presentation/pages/home_page.dart';
+import 'package:medipass/features/profile/presentation/pages/profil_page.dart';
+import 'package:medipass/features/search/presentation/pages/search_page.dart';
+import 'package:medipass/features/ia/presentation/pages/ia_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -14,9 +17,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   List<Widget> _buildScreens() => [
         HomePage(),
-        Center(child: Text('Tickets')),
-        Center(child: Text('IA')),
-        Center(child: Text('Profil')),
+        SearchPage(),
+        IAPage(),
+        ProfilePage()
       ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() => [

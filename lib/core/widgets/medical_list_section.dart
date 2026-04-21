@@ -4,12 +4,14 @@ import 'empty_section.dart';
 
 class MedicalListSection extends StatelessWidget {
   final String title;
+  final bool activedTitle;
   final VoidCallback? onSeeAllPressed;
   final List<Map<String, dynamic>> items; // Données des centres/labos
 
   const MedicalListSection({
     super.key,
     required this.title,
+    this.activedTitle = false,
     this.onSeeAllPressed,
     required this.items,
   });
@@ -23,18 +25,21 @@ class MedicalListSection extends StatelessWidget {
         // Header de la section
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              if (onSeeAllPressed != null)
-                TextButton(
-                  onPressed: onSeeAllPressed,
-                  child: const Text("Voir tout", style: TextStyle(color: Colors.blue)),
+              if (activedTitle) ...{
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+                if (onSeeAllPressed != null)
+                  TextButton(
+                    onPressed: onSeeAllPressed,
+                    child: const Text("Voir tout", style: TextStyle(color: Colors.blue)),
+                  )
+              }
             ],
           ),
         ),

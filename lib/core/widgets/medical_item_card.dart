@@ -18,9 +18,17 @@ class MedicalItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+     decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05), // Couleur de l'ombre
+            spreadRadius: 2,                       // Étendue de l'ombre
+            blurRadius: 10,                        // Flou de l'ombre
+            offset: const Offset(0, 4),            // Position (x, y)
+          ),
+        ],
       ),
       child: Column(
         children: [
