@@ -35,81 +35,75 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        // Fond dégradé avec courbe
-        Container(
-          height: 220,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF2B88F0), Color(0xFF53A3FF)],
-            ),
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.elliptical(200, 30),
-            ),
+ Widget _buildHeader(BuildContext context) {
+  return Stack(
+    alignment: Alignment.center,
+    clipBehavior: Clip.none,
+    children: [
+      // 1. Le fond bleu (Container)
+      Container(
+        height: 220,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF2B88F0), Color(0xFF53A3FF)],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.network(
-                    'https://i.postimg.cc/mrh98v9R/logo-medipass.png', // Remplace par ton asset
-                    height: 40,
-                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.add_box, color: Colors.white, size: 40),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    "MediPass",
-                    style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-            ],
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.elliptical(200, 30),
           ),
         ),
-        // Photo de profil
-        Positioned(
-          bottom: -50,
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
+      ),
+
+      // 2. Le Logo placé au Top 0 (Directement dans le Stack)
+      Positioned(
+        top: MediaQuery.of(context).padding.top + 20, // S'adapte à la barre de statut
+        left: 0,
+        right: 0,
+        child: Center(
+          child: Image.asset(
+            'assets/images/medipass_logo.png',
+            height: 40,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+
+      // 3. La Photo de profil
+      Positioned(
+        bottom: -50,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 4),
+              ),
+              child: const CircleAvatar(
+                radius: 65,
+                backgroundImage: NetworkImage('https://placeholder.com/profile_image'),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 5,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 4),
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                 ),
-                child: const CircleAvatar(
-                  radius: 65,
-                  backgroundImage: NetworkImage('https://placeholder.com/profile_image'), // Ton image
-                ),
+                child: const Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
               ),
-              Positioned(
-                bottom: 0,
-                right: 5,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
-                  ),
-                  child: const Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   Widget _buildUserInfo() {
     return Padding(

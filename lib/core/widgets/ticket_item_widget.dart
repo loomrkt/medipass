@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
 class TicketItemWidget extends StatelessWidget {
   final String title;
   final String? subtitlePrefix;
@@ -33,6 +33,9 @@ class TicketItemWidget extends StatelessWidget {
           ? Text("${subtitlePrefix ?? ''}${subtitlePrefix != null && time != null ? ' | ' : ''}${time != null ? 'Mis à jour $time' : ''}")
           : null,
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      onTap: () {
+        GoRouter.of(context).go("/conversation/${statusColor == Colors.blue ? 'ia' : 'ticket'}/$title");
+      },
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/home_header_widget.dart';
 import '../../../../core/widgets/medical_list_section.dart';
 import '../widgets/ActivitySection.dart';
+import 'package:go_router/go_router.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -35,12 +37,10 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final List<Map<String, dynamic>> iaData = [
-    {
-      "title": "Mal au ventre",
-    },
-    {
-      "title": "Consultation IA - Symptômes",
-    },
+    {"title": "Analyse des symptômes : Mal de ventre", "time": "Aujourd'hui"},
+    {"title": "Conseils nutritionnels", "time": "Hier"},
+    {"title": "Interprétation de résultat de prise de sang", "time": "12 Oct."},
+    {"title": "Questions sur le traitement Hypertension", "time": "05 Oct."},
   ];
 
   final List<Map<String, dynamic>> centresData = [
@@ -99,21 +99,25 @@ Widget build(BuildContext context) {
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               const HomeHeaderWidget(),
-              ActivitySection(title: "Mes Tickets", data: ticketsData),
-              ActivitySection(title: "Mes discussions IA", data: iaData),
+              ActivitySection(title: "Mes Tickets", data: ticketsData, seeAllRoute: "/tickets"),
+              ActivitySection(title: "Mes discussions IA", data: iaData, seeAllRoute: "/ia"),
               const SizedBox(height: 10),
               MedicalListSection(
                 title: "Rechercher un centre",
-                onSeeAllPressed: () {},
+                onSeeAllPressed: () {
+                    GoRouter.of(context).go("/search");
+                },
                 items: centresData,
                 activedTitle: true,
               ),
               const SizedBox(height: 10),
               MedicalListSection(
                 title: "Rechercher un laboratoire",
-                onSeeAllPressed: () {},
+                onSeeAllPressed: () {
+                    GoRouter.of(context).go("/search");
+                },
                 items: labosData,
                 activedTitle: true,
               ),

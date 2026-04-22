@@ -6,8 +6,9 @@ import '../../../../core/widgets/empty_section.dart';
 class ActivitySection extends StatelessWidget {
   final String title;
   final List<Map<String, dynamic>> data;
+  final String? seeAllRoute;
 
-  const ActivitySection({super.key, required this.title, required this.data});
+  const ActivitySection({super.key, required this.title, required this.data, this.seeAllRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class ActivitySection extends StatelessWidget {
 
     return SectionCard(
       title: title,
+      seeAllRoute: seeAllRoute,
       children: List.generate(
         data.length,
         (index) {

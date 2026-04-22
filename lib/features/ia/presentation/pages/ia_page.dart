@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class IAPage extends StatefulWidget {
   const IAPage({super.key});
@@ -10,10 +11,10 @@ class IAPage extends StatefulWidget {
 class _IAPageState extends State<IAPage> {
   // Données simulées
   final List<Map<String, dynamic>> iaDiscussions = [
-    {"title": "Analyse des symptômes : Mal de ventre", "date": "Aujourd'hui"},
-    {"title": "Conseils nutritionnels", "date": "Hier"},
-    {"title": "Interprétation de résultat de prise de sang", "date": "12 Oct."},
-    {"title": "Questions sur le traitement Hypertension", "date": "05 Oct."},
+    {"title": "Analyse des symptômes : Mal de ventre", "time": "Aujourd'hui"},
+    {"title": "Conseils nutritionnels", "time": "Hier"},
+    {"title": "Interprétation de résultat de prise de sang", "time": "12 Oct."},
+    {"title": "Questions sur le traitement Hypertension", "time": "05 Oct."},
   ];
 
   @override
@@ -89,7 +90,7 @@ class _IAPageState extends State<IAPage> {
 
   Widget _buildDynamicHeader() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.40,
+      height: MediaQuery.of(context).size.height * 0.50,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -204,12 +205,14 @@ class _IAPageState extends State<IAPage> {
             children: [
               Icon(Icons.calendar_today, size: 12, color: Colors.grey.shade400),
               const SizedBox(width: 4),
-              Text(item['date'], style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+              Text(item['time'], style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
             ],
           ),
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-        onTap: () {},
+        onTap: () {
+          GoRouter.of(context).go("/conversation/ia/${item['title']}"); // Redirection vers une conversation IA spécifique
+        },
       ),
     );
   }

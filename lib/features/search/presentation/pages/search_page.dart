@@ -26,18 +26,18 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // On garde le fond très clair pour le contraste
-      backgroundColor: const Color.fromARGB(255, 155, 155, 155),
+      backgroundColor: const Color.fromARGB(255, 155, 155, 155), // Bleu électrique
       body: Stack(
         children: [
           // 1. Le fond dégradé dynamique
-          _buildDynamicGradient(),
+          _buildDynamicHeader(),
 
           SafeArea(
             child: Column(
               children: [
                 const SizedBox(height: 20),
                 _buildAppBar(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 
                 // Barre de recherche
                 const Padding(
@@ -45,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: SearchInput(),
                 ),
                 
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
                 // 2. Le sélecteur d'onglets (Style Pill)
                 _buildGlassToggle(),
@@ -96,17 +96,17 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildDynamicGradient() {
+  Widget _buildDynamicHeader() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.70,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF2B88F0), // Bleu profond
-            Color.fromARGB(255, 83, 163, 255), // Bleu électrique
-            Color.fromARGB(255, 120, 178, 244), // Bleu ciel
+            Color(0xFF2B88F0),
+            Color.fromARGB(255, 83, 163, 255),
+            Color.fromARGB(255, 120, 178, 244),
           ],
         ),
       ),
