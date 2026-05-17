@@ -11,12 +11,19 @@ import '../../features/auth/presentation/pages/forgot_password_reset_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../main_navigation_page.dart';
+
+class RegistrationData {
+  final String name;
+  final String email;
+
+  RegistrationData({required this.name, required this.email});
+}
+
 class AppRouter {
   const AppRouter._();
 
   static const String splash = '/';
   static const String onboarding = '/onboarding';
-  static const String home = '/home';
   static const String loginEmail = '/login-email';
   static const String loginPassword = '/login-password';
   static const String registerName = '/register-name';
@@ -26,14 +33,12 @@ class AppRouter {
   static const String forgotPasswordEmail = '/forgot-password-email';
   static const String forgotPasswordOtp = '/forgot-password-otp';
   static const String forgotPasswordReset = '/forgot-password-reset';
+  static const String home = '/home';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
     routes: [
-      GoRoute(
-        path: splash,
-        builder: (context, state) => const SplashPage(),
-      ),
+      GoRoute(path: splash, builder: (context, state) => const SplashPage()),
       GoRoute(
         path: onboarding,
         builder: (context, state) => const OnboardingPage(),
@@ -55,20 +60,23 @@ class AppRouter {
       ),
       GoRoute(
         path: registerEmail,
-        builder: (context, state) => const RegisterEmailPage(),
+        builder: (context, state) {
+          final name = state.extra as String?;
+          return RegisterEmailPage(name: name);
+        },
       ),
       GoRoute(
         path: registerPassword,
         builder: (context, state) {
-          final email = state.extra as String?;
-          return RegisterPasswordPage(email: email);
+          final data = state.extra as RegistrationData?;
+          return RegisterPasswordPage(data: data);
         },
       ),
       GoRoute(
         path: registerOtp,
         builder: (context, state) {
-          final email = state.extra as String?;
-          return RegisterOtpPage(email: email);
+          final data = state.extra as RegistrationData?;
+          return RegisterOtpPage(data: data);
         },
       ),
       GoRoute(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/auth_service.dart';
 import '../controllers/login_password_controller.dart';
 import '../di/auth_injection.dart';
 import '../widgets/auth_action_button.dart';
@@ -14,10 +15,7 @@ import '../widgets/biometric_auth_button.dart';
 class LoginPasswordPage extends StatefulWidget {
   final String? email;
 
-  const LoginPasswordPage({
-    super.key,
-    this.email,
-  });
+  const LoginPasswordPage({super.key, this.email});
 
   @override
   State<LoginPasswordPage> createState() => _LoginPasswordPageState();
@@ -54,23 +52,40 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
     );
   }
 
-  void _login() {
+  void _login() async {
     final error = controller.validatePassword();
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Connexion avec ${widget.email ?? "votre compte"}',
-        ),
-      ),
-    );
+    try {
+      final result = await AuthService.instance.login(
+        widget.email ?? '',
+        controller.password,
+      );
+
+      if (result['success'] == true) {
+        if (mounted) {
+          context.go('/home');
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result['error'] ?? 'Login failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erreur de connexion: $e')));
+      }
+    }
   }
 
   @override
@@ -105,81 +120,81 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
                 const SizedBox(height: 140),
                 Expanded(
                   child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AuthInputField(
-                      controller: controller.passwordController,
-                      label: 'Mot de passe',
-                      hintText: 'Votre mot de passe',
-                      obscureText: controller.obscurePassword,
-                      suffixIcon: IconButton(
-                        onPressed: controller.togglePasswordVisibility,
-                        icon: Icon(
-                          controller.obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          color: const Color(0xFFB0B8C5),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          context.push('/forgot-password-email');
-                        },
-                        child: const Text(
-                          'Mot de passe oublié?',
-                          style: TextStyle(
-                            color: Color(0xFF2E3142),
-                            fontSize: 16,
+                    padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AuthInputField(
+                          controller: controller.passwordController,
+                          label: 'Mot de passe',
+                          hintText: 'Votre mot de passe',
+                          obscureText: controller.obscurePassword,
+                          suffixIcon: IconButton(
+                            onPressed: controller.togglePasswordVisibility,
+                            icon: Icon(
+                              controller.obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: const Color(0xFFB0B8C5),
+                            ),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 14),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              context.push('/forgot-password-email');
+                            },
+                            child: const Text(
+                              'Mot de passe oublié?',
+                              style: TextStyle(
+                                color: Color(0xFF2E3142),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        AuthActionButton(
+                          label: 'Se connecter',
+                          onPressed: _login,
+                        ),
+                        const SizedBox(height: 20),
+                        if (biometricState.isAvailable) ...[
+                          BiometricAuthButton(
+                            icon: Icons.fingerprint,
+                            label: 'Se connecter avec biométrie',
+                            onTap: _handleBiometricLogin,
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                        if (biometricState.hasFaceRecognition) ...[
+                          BiometricAuthButton(
+                            icon: Icons.face_outlined,
+                            label: 'Se connecter avec reconnaissance faciale',
+                            onTap: _handleBiometricLogin,
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        AuthSwitchAccountText(
+                          isLogin: true,
+                          onTap: () {
+                            context.go('/register-name');
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        const AuthOrDivider(),
+                        const SizedBox(height: 28),
+                        AuthSocialRow(
+                          onGoogleTap: () {},
+                          onAppleTap: () {},
+                          onFacebookTap: () {},
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    AuthActionButton(
-                      label: 'Se connecter',
-                      onPressed: _login,
-                    ),
-                    const SizedBox(height: 20),
-                    if (biometricState.isAvailable) ...[
-                      BiometricAuthButton(
-                        icon: Icons.fingerprint,
-                        label: 'Se connecter avec biométrie',
-                        onTap: _handleBiometricLogin,
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                    if (biometricState.hasFaceRecognition) ...[
-                      BiometricAuthButton(
-                        icon: Icons.face_outlined,
-                        label: 'Se connecter avec reconnaissance faciale',
-                        onTap: _handleBiometricLogin,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    AuthSwitchAccountText(
-                      isLogin: true,
-                      onTap: () {
-                        context.go('/register-name');
-                      },
-                    ),
-                    const SizedBox(height: 28),
-                    const AuthOrDivider(),
-                    const SizedBox(height: 28),
-                    AuthSocialRow(
-                      onGoogleTap: () {},
-                      onAppleTap: () {},
-                      onFacebookTap: () {},
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
               ],
             ),
           ),

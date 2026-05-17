@@ -5,19 +5,18 @@ class AuthOtpField extends StatelessWidget {
   final List<TextEditingController> controllers;
   final Function(String)? onChanged;
 
-  const AuthOtpField({
-    super.key,
-    required this.controllers,
-    this.onChanged,
-  });
+  const AuthOtpField({super.key, required this.controllers, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    assert(controllers.length == 4, "AuthOtpField needs exactly 4 controllers");
+    assert(
+      controllers.isNotEmpty,
+      "AuthOtpField needs at least one controller",
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(4, (index) {
+      children: List.generate(controllers.length, (index) {
         return SizedBox(
           width: 64,
           height: 64,
@@ -46,11 +45,17 @@ class AuthOtpField extends StatelessWidget {
               counterText: "",
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFFF3F3F5), width: 1.5),
+                borderSide: const BorderSide(
+                  color: Color(0xFFF3F3F5),
+                  width: 1.5,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFF2D9CFF), width: 1.5),
+                borderSide: const BorderSide(
+                  color: Color(0xFF2D9CFF),
+                  width: 1.5,
+                ),
               ),
               filled: true,
               fillColor: const Color(0xFFF9F9F9),

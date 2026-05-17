@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordOtpController extends ChangeNotifier {
-  final TextEditingController otp1Controller = TextEditingController();
-  final TextEditingController otp2Controller = TextEditingController();
-  final TextEditingController otp3Controller = TextEditingController();
-  final TextEditingController otp4Controller = TextEditingController();
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
   int timerCountdown = 59;
   Timer? _timer;
@@ -28,14 +28,10 @@ class ForgotPasswordOtpController extends ChangeNotifier {
     });
   }
 
-  String get otpCode => 
-      otp1Controller.text + 
-      otp2Controller.text + 
-      otp3Controller.text + 
-      otp4Controller.text;
+  String get otpCode => otpControllers.map((c) => c.text).join();
 
   String? validate() {
-    if (otpCode.length < 4) {
+    if (otpCode.length < 6) {
       return 'Veuillez entrer le code OTP complet.';
     }
     return null;
@@ -51,10 +47,9 @@ class ForgotPasswordOtpController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
-    otp1Controller.dispose();
-    otp2Controller.dispose();
-    otp3Controller.dispose();
-    otp4Controller.dispose();
+    for (var controller in otpControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 }

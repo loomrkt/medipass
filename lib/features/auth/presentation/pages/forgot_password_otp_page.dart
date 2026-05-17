@@ -10,10 +10,7 @@ import '../widgets/auth_otp_field.dart';
 class ForgotPasswordOtpPage extends StatefulWidget {
   final String email;
 
-  const ForgotPasswordOtpPage({
-    super.key,
-    required this.email,
-  });
+  const ForgotPasswordOtpPage({super.key, required this.email});
 
   @override
   State<ForgotPasswordOtpPage> createState() => _ForgotPasswordOtpPageState();
@@ -38,20 +35,13 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
     final error = controller.validate();
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
     context.push('/forgot-password-reset');
-  }
-
-  void _resend() {
-    controller.resendCode();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Nouveau code envoyé')),
-    );
   }
 
   @override
@@ -72,9 +62,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
             left: 0,
             right: 0,
             height: 440,
-            child: AuthHeader(
-              showBackButton: true,
-            ),
+            child: AuthHeader(showBackButton: true),
           ),
           SafeArea(
             bottom: false,
@@ -106,14 +94,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
                           ),
                         ),
                         const SizedBox(height: 32),
-                        AuthOtpField(
-                          controllers: [
-                            controller.otp1Controller,
-                            controller.otp2Controller,
-                            controller.otp3Controller,
-                            controller.otp4Controller,
-                          ],
-                        ),
+                        AuthOtpField(controllers: controller.otpControllers),
                         const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -148,7 +129,10 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
                           },
                           child: RichText(
                             text: const TextSpan(
-                              style: TextStyle(fontSize: 14, color: Color(0xFF7A869A)),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF7A869A),
+                              ),
                               children: [
                                 TextSpan(text: 'Mot de passe retrouvé ? '),
                                 TextSpan(

@@ -18,12 +18,15 @@ class _IAPageState extends State<IAPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 155, 155, 155), // Cohérence avec SearchPage
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // 1. Fond dégradé dynamique (Identique à SearchPage)
-          _buildDynamicHeader(),
+          // 1. Fond dégradé dynamique
+          _buildDynamicHeader(isDark),
 
           SafeArea(
             child: Column(
@@ -32,26 +35,26 @@ class _IAPageState extends State<IAPage> {
                 _buildAppBar(),
                 const SizedBox(height: 25),
 
-                // 2. Widget "Glass" - Statistiques rapides ou Information IA
-                _buildGlassInfoCard(),
+                // 2. Widget "Glass"
+                _buildGlassInfoCard(isDark),
 
                 const SizedBox(height: 30),
 
-                // 3. Liste des discussions avec arrondi inversé
+                // 3. Conteneur de liste avec arrondi inversé
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF5F7FA), // Gris bleuté très clair
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: isDark ? theme.cardColor : const Color(0xFFF5F7FA),
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
+                          color: isDark ? Colors.black54 : Colors.black12,
                           blurRadius: 20,
-                          offset: Offset(0, -5),
+                          offset: const Offset(0, -5),
                         )
                       ],
                     ),
@@ -61,12 +64,13 @@ class _IAPageState extends State<IAPage> {
                         topRight: Radius.circular(40),
                       ),
                       child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(24, 30, 24, 100),
+                        // CORRECTION : On augmente le padding du bas à 140 pour ne pas être caché par la NavBar
+                        padding: const EdgeInsets.fromLTRB(24, 30, 24, 140),
                         physics: const BouncingScrollPhysics(),
                         itemCount: iaDiscussions.length,
                         itemBuilder: (context, index) {
                           final item = iaDiscussions[index];
-                          return _buildChatTile(item);
+                          return _buildChatTile(item, isDark);
                         },
                       ),
                     ),
@@ -77,28 +81,31 @@ class _IAPageState extends State<IAPage> {
           ),
         ],
       ),
-      // Bouton flottant stylisé
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF2B88F0),
-        icon: const Icon(Icons.add_comment, color: Colors.white),
-        label: const Text("Nouvelle Analyse", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      // Bouton flottant
+      floatingActionButton: Padding(
+        // On monte aussi un peu le bouton pour qu'il ne touche pas la NavBar
+        padding: const EdgeInsets.only(bottom: 90),
+        child: FloatingActionButton.extended(
+          onPressed: () {},
+          backgroundColor: const Color(0xFF2B88F0),
+          icon: const Icon(Icons.add_comment, color: Colors.white),
+          label: const Text("Nouvelle Analyse",
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
       ),
     );
   }
 
-  Widget _buildDynamicHeader() {
+  Widget _buildDynamicHeader(bool isDark) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.40,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF2B88F0),
-            Color.fromARGB(255, 83, 163, 255),
-            Color.fromARGB(255, 120, 178, 244),
-          ],
+          colors: isDark
+              ? [const Color(0xFF1A3A5F), const Color(0xFF121212)]
+              : [const Color(0xFF2B88F0), const Color(0xFF53A3FF), const Color(0xFF78B2F4)],
         ),
       ),
     );
@@ -115,12 +122,7 @@ class _IAPageState extends State<IAPage> {
             children: [
               Text(
                 "Assistant IA",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 0.5),
               ),
               Text(
                 "Historique de vos consultations",
@@ -137,12 +139,12 @@ class _IAPageState extends State<IAPage> {
     );
   }
 
-  Widget _buildGlassInfoCard() {
+  Widget _buildGlassInfoCard(bool isDark) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: isDark ? Colors.black38 : Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white.withOpacity(0.2)),
       ),
@@ -159,7 +161,7 @@ class _IAPageState extends State<IAPage> {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "L'IA peut vous aider à comprendre vos symptômes avant de voir un médecin.",
+                  "L'IA peut vous aider à comprendre vos symptômes.",
                   style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
                 ),
               ],
@@ -170,15 +172,15 @@ class _IAPageState extends State<IAPage> {
     );
   }
 
-  Widget _buildChatTile(Map<String, dynamic> item) {
+  Widget _buildChatTile(Map<String, dynamic> item, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF333333) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: isDark ? Colors.black26 : Colors.black.withOpacity(0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -196,19 +198,23 @@ class _IAPageState extends State<IAPage> {
         ),
         title: Text(
           item['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF2D3142)),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: isDark ? Colors.white : const Color(0xFF2D3142)
+          ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 6),
           child: Row(
             children: [
-              Icon(Icons.calendar_today, size: 12, color: Colors.grey.shade400),
+              Icon(Icons.calendar_today, size: 12, color: isDark ? Colors.white54 : Colors.grey.shade400),
               const SizedBox(width: 4),
-              Text(item['date'], style: TextStyle(color: Colors.grey.shade500, fontSize: 12)),
+              Text(item['date'], style: TextStyle(color: isDark ? Colors.white54 : Colors.grey.shade500, fontSize: 12)),
             ],
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+        trailing: Icon(Icons.arrow_forward_ios, size: 14, color: isDark ? Colors.white38 : Colors.grey),
         onTap: () {},
       ),
     );

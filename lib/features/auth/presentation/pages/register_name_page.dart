@@ -36,13 +36,16 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     final error = controller.validate();
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
-    context.push('/register-email', extra: {'name': controller.name, 'surname': controller.surname});
+    context.push(
+      '/register-email',
+      extra: '${controller.name} ${controller.surname}'.trim(),
+    );
   }
 
   @override
@@ -72,45 +75,45 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
                 const SizedBox(height: 140),
                 Expanded(
                   child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AuthInputField(
-                      controller: controller.nameController,
-                      label: 'Nom',
-                      hintText: 'Votre nom',
+                    padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AuthInputField(
+                          controller: controller.nameController,
+                          label: 'Nom',
+                          hintText: 'Votre nom',
+                        ),
+                        const SizedBox(height: 16),
+                        AuthInputField(
+                          controller: controller.surnameController,
+                          label: 'Prenom',
+                          hintText: 'Votre prenom',
+                        ),
+                        const SizedBox(height: 24),
+                        AuthActionButton(
+                          label: 'Continuer',
+                          onPressed: _continue,
+                        ),
+                        const SizedBox(height: 28),
+                        AuthSwitchAccountText(
+                          isLogin: false,
+                          onTap: () {
+                            context.go('/login-email');
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        const AuthOrDivider(),
+                        const SizedBox(height: 28),
+                        AuthSocialRow(
+                          onGoogleTap: () {},
+                          onAppleTap: () {},
+                          onFacebookTap: () {},
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    AuthInputField(
-                      controller: controller.surnameController,
-                      label: 'Prenom',
-                      hintText: 'Votre prenom',
-                    ),
-                    const SizedBox(height: 24),
-                    AuthActionButton(
-                      label: 'Continuer',
-                      onPressed: _continue,
-                    ),
-                    const SizedBox(height: 28),
-                    AuthSwitchAccountText(
-                      isLogin: false,
-                      onTap: () {
-                        context.go('/login-email');
-                      },
-                    ),
-                    const SizedBox(height: 28),
-                    const AuthOrDivider(),
-                    const SizedBox(height: 28),
-                    AuthSocialRow(
-                      onGoogleTap: () {},
-                      onAppleTap: () {},
-                      onFacebookTap: () {},
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
               ],
             ),
           ),

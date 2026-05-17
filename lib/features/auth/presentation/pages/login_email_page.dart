@@ -101,7 +101,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                           label: 'Continuer',
                           onPressed: _continue,
                         ),
-                        
+
                         if (!controller.isLoadingBiometric && controller.biometricState.isAvailable) ...[
                           const SizedBox(height: 16),
                           BiometricAuthButton(
@@ -110,7 +110,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                             onTap: _handleBiometricAuth,
                           ),
                         ],
-                        
+
                         const SizedBox(height: 28),
                         AuthSwitchAccountText(
                           isLogin: true,

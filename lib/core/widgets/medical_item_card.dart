@@ -1,32 +1,93 @@
 import 'package:flutter/material.dart';
 
-class MedicalItemCard extends StatelessWidget {
-  final String name;
-  final String slogan;
-  final String time;
-  final bool showAppointmentButton;
+// --- WIDGET 1 : LA SECTION (La liste) ---
+class MedicalListSection extends StatelessWidget {
+  final String title;
+  final List<Map<String, dynamic>> items;
+  final VoidCallback onSeeAllPressed;
+  final bool activedTitle;
 
-  const MedicalItemCard({
+  const MedicalListSection({
     super.key,
-    required this.name,
-    required this.slogan,
-    required this.time,
-    this.showAppointmentButton = false,
+    required this.title,
+    required this.items,
+    required this.onSeeAllPressed,
+    this.activedTitle = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tête de section (Titre + Voir tout)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: theme.textTheme.bodyLarge?.color,
+                ),
+              ),
+              if (activedTitle)
+                TextButton(
+                  onPressed: onSeeAllPressed,
+                  child: Text(
+                    "Voir tout",
+                    style: TextStyle(
+                        color: Colors.blue.shade400,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Liste des cartes générées dynamiquement
+          Column(
+            children: items.map((item) => MedicalItemCard(item: item)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- WIDGET 2 : LA CARTE INDIVIDUELLE (Correction Mode Sombre) ---
+class MedicalItemCard extends StatelessWidget {
+  final Map<String, dynamic> item;
+
+  const MedicalItemCard({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
-     decoration: BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        // cardColor : Blanc en light, Gris anthracite (0xFF2A2A2A) en dark
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
+        // Bordure subtile pour le relief en mode sombre
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05), // Couleur de l'ombre
-            spreadRadius: 2,                       // Étendue de l'ombre
-            blurRadius: 10,                        // Flou de l'ombre
-            offset: const Offset(0, 4),            // Position (x, y)
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -34,47 +95,89 @@ class MedicalItemCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(color: Colors.grey[200], width: 50, height: 50),
+              // Zone Image / Icône
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF5F7FA),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.local_hospital_outlined,
+                  color: isDark ? Colors.blue.shade300 : const Color(0xFF2B88F0),
+                ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
+              // Textes (Nom, Slogan, Horaire)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text(slogan, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                    Text(
+                      item['name'] ?? '',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: theme.textTheme.bodyLarge?.color,
+                      ),
+                    ),
                     const SizedBox(height: 4),
+                    Text(
+                      item['slogan'] ?? '',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.access_time, size: 14, color: Colors.grey),
+                        Icon(Icons.access_time, size: 14, color: Colors.blue.shade300),
                         const SizedBox(width: 4),
-                        Text(time, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                        Text(
+                          item['time'] ?? '',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.location_on_outlined, color: Colors.black54),
+              // Icône localisation
+              Icon(Icons.location_on_outlined, color: Colors.blue.shade300, size: 20),
             ],
           ),
-          if (showAppointmentButton) ...[
-            const SizedBox(height: 12),
+
+          // Bouton "Prendre rendez-vous" (s'il est activé)
+          if (item['showButton'] == true) ...[
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE3F2FD),
-                  foregroundColor: Colors.blue,
+                  // En mode sombre, on utilise un bleu très doux avec opacité
+                  backgroundColor: isDark
+                      ? Colors.blue.withOpacity(0.15)
+                      : const Color(0xFFEBF4FF),
+                  foregroundColor: const Color(0xFF2B88F0),
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: const Text("Prendre rendez-vous"),
+                child: const Text(
+                  "Prendre rendez-vous",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-          ]
+          ],
         ],
       ),
     );

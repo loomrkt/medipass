@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 
 class SearchInput extends StatelessWidget {
-  const SearchInput({super.key});
+  final ValueChanged<String>? onChanged; // AJOUTÉ
+
+  const SearchInput({super.key, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Colors.black26 : Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: TextField(
-        decoration: InputDecoration(
+        onChanged: onChanged, // AJOUTÉ
+        style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+        decoration: const InputDecoration(
           hintText: "Rechercher...",
-          prefixIcon: const Icon(Icons.search),
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
+          prefixIcon: Icon(Icons.search, color: Color(0xFF2B88F0)),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 15),
         ),
       ),
     );

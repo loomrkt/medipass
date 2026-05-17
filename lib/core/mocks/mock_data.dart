@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 enum TicketStatus { enCours, resolu }
+
 enum PlaceType { center, laboratory }
 
 class ChatMessage {
@@ -82,6 +83,14 @@ class MockDataRepository extends ChangeNotifier {
   final List<IADiscussion> iaDiscussions = [];
   final List<Place> places = [];
 
+  String _userName = 'Utilisateur';
+  String get userName => _userName;
+
+  void updateUserName(String name) {
+    _userName = name;
+    notifyListeners();
+  }
+
   void _initData() {
     tickets.addAll([
       Ticket(
@@ -91,8 +100,22 @@ class MockDataRepository extends ChangeNotifier {
         location: 'Hospital',
         lastUpdated: DateTime.now().subtract(const Duration(hours: 2)),
         messages: [
-          ChatMessage(id: 'm1', content: 'Bonjour docteur, j\'ai très mal au ventre.', isMe: true, timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 10))),
-          ChatMessage(id: 'm2', content: 'Bonjour. Depuis combien de temps ?', isMe: false, timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 5))),
+          ChatMessage(
+            id: 'm1',
+            content: 'Bonjour docteur, j\'ai très mal au ventre.',
+            isMe: true,
+            timestamp: DateTime.now().subtract(
+              const Duration(hours: 2, minutes: 10),
+            ),
+          ),
+          ChatMessage(
+            id: 'm2',
+            content: 'Bonjour. Depuis combien de temps ?',
+            isMe: false,
+            timestamp: DateTime.now().subtract(
+              const Duration(hours: 2, minutes: 5),
+            ),
+          ),
         ],
       ),
       Ticket(
@@ -102,10 +125,22 @@ class MockDataRepository extends ChangeNotifier {
         location: 'Hospital',
         lastUpdated: DateTime.now().subtract(const Duration(days: 60)),
         messages: [
-          ChatMessage(id: 'm1', content: 'J\'ai une infection de la gencive.', isMe: true, timestamp: DateTime.now().subtract(const Duration(days: 60, minutes: 10))),
-          ChatMessage(id: 'm2', content: 'Voici l\'ordonnance pour votre infection.', isMe: false, timestamp: DateTime.now().subtract(const Duration(days: 60))),
+          ChatMessage(
+            id: 'm1',
+            content: 'J\'ai une infection de la gencive.',
+            isMe: true,
+            timestamp: DateTime.now().subtract(
+              const Duration(days: 60, minutes: 10),
+            ),
+          ),
+          ChatMessage(
+            id: 'm2',
+            content: 'Voici l\'ordonnance pour votre infection.',
+            isMe: false,
+            timestamp: DateTime.now().subtract(const Duration(days: 60)),
+          ),
         ],
-      )
+      ),
     ]);
 
     iaDiscussions.addAll([
@@ -115,8 +150,23 @@ class MockDataRepository extends ChangeNotifier {
         subtitle: 'Mis à jour il y a 2h',
         lastUpdated: DateTime.now().subtract(const Duration(hours: 2)),
         messages: [
-          ChatMessage(id: 'm1', content: 'J\'ai très mal au ventre, que faire ?', isMe: true, timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 10))),
-          ChatMessage(id: 'm2', content: 'Si la douleur est aiguë et persistante, veuillez consulter immédiatement un médecin. Avez-vous de la fièvre ?', isMe: false, timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 9))),
+          ChatMessage(
+            id: 'm1',
+            content: 'J\'ai très mal au ventre, que faire ?',
+            isMe: true,
+            timestamp: DateTime.now().subtract(
+              const Duration(hours: 2, minutes: 10),
+            ),
+          ),
+          ChatMessage(
+            id: 'm2',
+            content:
+                'Si la douleur est aiguë et persistante, veuillez consulter immédiatement un médecin. Avez-vous de la fièvre ?',
+            isMe: false,
+            timestamp: DateTime.now().subtract(
+              const Duration(hours: 2, minutes: 9),
+            ),
+          ),
         ],
       ),
       IADiscussion(
@@ -125,10 +175,25 @@ class MockDataRepository extends ChangeNotifier {
         subtitle: 'Mis à jour il y a 2 mois',
         lastUpdated: DateTime.now().subtract(const Duration(days: 60)),
         messages: [
-          ChatMessage(id: 'm1', content: 'Comment calmer une rage de dent ?', isMe: true, timestamp: DateTime.now().subtract(const Duration(days: 60, minutes: 10))),
-          ChatMessage(id: 'm2', content: 'Vous pouvez prendre un antalgique léger, mais prenez rendez-vous chez votre dentiste le plus tôt possible.', isMe: false, timestamp: DateTime.now().subtract(const Duration(days: 60, minutes: 9))),
+          ChatMessage(
+            id: 'm1',
+            content: 'Comment calmer une rage de dent ?',
+            isMe: true,
+            timestamp: DateTime.now().subtract(
+              const Duration(days: 60, minutes: 10),
+            ),
+          ),
+          ChatMessage(
+            id: 'm2',
+            content:
+                'Vous pouvez prendre un antalgique léger, mais prenez rendez-vous chez votre dentiste le plus tôt possible.',
+            isMe: false,
+            timestamp: DateTime.now().subtract(
+              const Duration(days: 60, minutes: 9),
+            ),
+          ),
         ],
-      )
+      ),
     ]);
 
     places.addAll([
@@ -163,7 +228,7 @@ class MockDataRepository extends ChangeNotifier {
         address: 'Analakely',
         timeInfo: '07:30am - 06:00pm',
         type: PlaceType.laboratory,
-      )
+      ),
     ]);
   }
 
@@ -192,7 +257,7 @@ class MockDataRepository extends ChangeNotifier {
           content: content,
           isMe: true,
           timestamp: DateTime.now(),
-        )
+        ),
       );
       notifyListeners();
 
@@ -201,10 +266,11 @@ class MockDataRepository extends ChangeNotifier {
         discussion.messages.add(
           ChatMessage(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
-            content: "Ceci est une réponse automatique de simulation IA concernant : \"$content\".",
+            content:
+                "Ceci est une réponse automatique de simulation IA concernant : \"$content\".",
             isMe: false,
             timestamp: DateTime.now(),
-          )
+          ),
         );
         notifyListeners();
       });
@@ -221,7 +287,7 @@ class MockDataRepository extends ChangeNotifier {
           content: content,
           isMe: true,
           timestamp: DateTime.now(),
-        )
+        ),
       );
       notifyListeners();
     }

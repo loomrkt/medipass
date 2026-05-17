@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/app_router.dart';
+
 import '../controllers/register_email_controller.dart';
 import '../di/auth_injection.dart';
 import '../widgets/auth_action_button.dart';
@@ -11,7 +13,9 @@ import '../widgets/auth_switch_account_text.dart';
 import '../widgets/auth_header.dart';
 
 class RegisterEmailPage extends StatefulWidget {
-  const RegisterEmailPage({super.key});
+  final String? name;
+
+  const RegisterEmailPage({super.key, this.name});
 
   @override
   State<RegisterEmailPage> createState() => _RegisterEmailPageState();
@@ -36,13 +40,16 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
     final error = controller.validate();
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
-    context.push('/register-password', extra: controller.email);
+    context.push(
+      '/register-password',
+      extra: RegistrationData(name: widget.name ?? '', email: controller.email),
+    );
   }
 
   @override
@@ -75,40 +82,40 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
                 const SizedBox(height: 140),
                 Expanded(
                   child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AuthInputField(
-                      controller: controller.emailController,
-                      label: 'Email',
-                      hintText: 'Votre email',
-                      keyboardType: TextInputType.emailAddress,
+                    padding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AuthInputField(
+                          controller: controller.emailController,
+                          label: 'Email',
+                          hintText: 'Votre email',
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: 24),
+                        AuthActionButton(
+                          label: 'Continuer',
+                          onPressed: _continue,
+                        ),
+                        const SizedBox(height: 28),
+                        AuthSwitchAccountText(
+                          isLogin: false,
+                          onTap: () {
+                            context.go('/login-email');
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        const AuthOrDivider(),
+                        const SizedBox(height: 28),
+                        AuthSocialRow(
+                          onGoogleTap: () {},
+                          onAppleTap: () {},
+                          onFacebookTap: () {},
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    AuthActionButton(
-                      label: 'Continuer',
-                      onPressed: _continue,
-                    ),
-                    const SizedBox(height: 28),
-                    AuthSwitchAccountText(
-                      isLogin: false,
-                      onTap: () {
-                        context.go('/login-email');
-                      },
-                    ),
-                    const SizedBox(height: 28),
-                    const AuthOrDivider(),
-                    const SizedBox(height: 28),
-                    AuthSocialRow(
-                      onGoogleTap: () {},
-                      onAppleTap: () {},
-                      onFacebookTap: () {},
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
               ],
             ),
           ),

@@ -1,0 +1,3 @@
+const String supabaseUrl = 'https://wncekxlgpyxlumvdhmfo.supabase.co';
+const String supabaseAnonKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduY2VreGxncHl4bHVtdmRobWZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMzIxMTgsImV4cCI6MjA5MjYwODExOH0.sCaQZ4G9WewDROY238fsE1vdwNMz0n9syjof7eXribY';

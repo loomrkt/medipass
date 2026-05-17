@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/services/auth_service.dart';
 import '../controllers/forgot_password_email_controller.dart';
 import '../di/auth_injection.dart';
 import '../widgets/auth_action_button.dart';
@@ -30,17 +31,39 @@ class _ForgotPasswordEmailPageState extends State<ForgotPasswordEmailPage> {
     if (mounted) setState(() {});
   }
 
-  void _continue() {
+  void _continue() async {
     final error = controller.validate();
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
-    context.push('/forgot-password-otp', extra: controller.email);
+    try {
+      final result = await AuthService.instance.forgotPassword(
+        controller.email,
+      );
+
+      if (result['success'] == true) {
+        if (mounted) {
+          context.push('/forgot-password-otp', extra: controller.email);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result['error'] ?? 'Reset failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur de réinitialisation: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -61,9 +84,7 @@ class _ForgotPasswordEmailPageState extends State<ForgotPasswordEmailPage> {
             left: 0,
             right: 0,
             height: 440,
-            child: AuthHeader(
-              showBackButton: true,
-            ),
+            child: AuthHeader(showBackButton: true),
           ),
           SafeArea(
             bottom: false,

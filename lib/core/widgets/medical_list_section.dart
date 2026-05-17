@@ -18,32 +18,46 @@ class MedicalListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) return EmptySection(title: title, noBackground: true );
+    // Si la liste est vide, on affiche la section vide
+    if (items.isEmpty) return EmptySection(title: title, noBackground: true);
+
+    final theme = Theme.of(context);
 
     return Column(
       children: [
-        // Header de la section
+        // --- HEADER DE LA SECTION ---
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (activedTitle) ...{
+              if (activedTitle) ...[
+                // Titre dynamique (Blanc en sombre, Noir en clair)
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
                 if (onSeeAllPressed != null)
                   TextButton(
                     onPressed: onSeeAllPressed,
-                    child: const Text("Voir tout", style: TextStyle(color: Colors.blue)),
+                    child: Text(
+                      "Voir tout",
+                      style: TextStyle(
+                        color: Colors.blue.shade400,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   )
-              }
+              ]
             ],
           ),
         ),
-        // Liste des items
+
+        // --- LISTE DES ITEMS ---
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -51,12 +65,11 @@ class MedicalListSection extends StatelessWidget {
           itemCount: items.length,
           separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
-            final item = items[index];
+            final itemData = items[index];
+
+            // CORRECTION ICI : On passe l'objet entier 'itemData' au paramètre 'item'
             return MedicalItemCard(
-              name: item['name'],
-              slogan: item['slogan'],
-              time: item['time'],
-              showAppointmentButton: item['showButton'] ?? false,
+              item: itemData,
             );
           },
         ),
